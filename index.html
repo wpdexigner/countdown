@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown Widget</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div id="countdown">Notion Launch<br>365d 0h 0m 0s</div>
+        <button id="settings-btn"><i class="fas fa-pen"></i></button>
+        <button id="color-btn"><i class="fas fa-cog"></i></button>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Enter event name and select the date and time.</p>
+            <input type="text" id="eventInput" placeholder="Event Name" />
+            <input type="datetime-local" id="targetDate" />
+        </div>
+    </div>
+
+    <div id="color-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Choose a background color:</p>
+            <select id="colorSelect">
+                <option value="#F7F6F3">Default</option>
+                <option value="#FDEBEC">Red</option>
+                <option value="#FBF3DB">Yellow</option>
+                <option value="#EDF3EC">Green</option>
+                <option value="#E7F3F8">Blue</option>
+                <option value="#F4EEEE">Brown</option>
+                <option value="#FAF1F5">Pink</option>
+                <option value="#F6F3F9">Purple</option>
+                <option value="#FAEBDD">Orange</option>
+            </select>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
