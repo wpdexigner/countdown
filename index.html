@@ -1,44 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Countdown Widget</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
 </head>
-<body>
-    <div class="container">
-        <div id="countdown">Notion Launch<br>365d 0h 0m 0s</div>
-        <button id="settings-btn"><i class="fas fa-pen"></i></button>
-        <button id="color-btn"><i class="fas fa-cog"></i></button>
+<body class="bg-gray-100 h-screen flex justify-center items-center dark:bg-[#2f343a]">
+    <div class="bg-white p-10 rounded-lg shadow-md w-80 relative dark:bg-[#373C3F]">
+        <h1 id="event-name" class="text-lg text-gray-700 font-bold mb-4 dark:text-[#d3d3d3]">No Event</h1>
+        <div id="time" class="text-lg text-gray-700 font-bold mt-4 flex justify-between dark:text-[#d3d3d3]">
+            <div class="flex flex-col items-center">
+                <span id="days" class="text-2xl font-bold">00</span>
+                <span class="text-sm">Days</span>
+            </div>
+            <div class="flex flex-col items-center mx-4">
+                <span id="hours" class="text-2xl font-bold">00</span>
+                <span class="text-sm">Hrs</span>
+            </div>
+            <div class="flex flex-col items-center mx-4">
+                <span id="minutes" class="text-2xl font-bold">00</span>
+                <span class="text-sm">Min</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span id="seconds" class="text-2xl font-bold">00</span>
+                <span class="text-sm">Sec</span>
+            </div>
+        </div>
+        <button id="add-event-btn" class="bg-[#f7f6f3] hover:bg-[#f5f4f0] text-[#37352F] font-bold py-2 px-4 rounded-lg absolute top-4 right-4 dark:bg-[#454B4E] dark:hover:bg-[#3f4347] dark:text-[#979A9B]">
+            <i class="fa fa-plus text-[#37352F] dark:text-[#979A9B]"></i>
+        </button>
     </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Enter event name and select the date and time.</p>
-            <input type="text" id="eventInput" placeholder="Event Name" />
-            <input type="datetime-local" id="targetDate" />
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-10 rounded-lg shadow-md w-80 dark:bg-[#373C3F]">
+            <h1 class="text-lg text-gray-700 font-bold mb-4 dark:text-[#d3d3d3]">Add Event</h1>
+            <input type="text" id="event-name-input" placeholder="Event Name" class="w-full p-2 mb-4 border border-gray-300 rounded-lg dark:bg-[#454B4E] dark:text-[#d3d3d3] dark:border-[#3f4347]">
+            <input type="datetime-local" id="event-date" class="w-full p-2 mb-4 border border-gray-300 rounded-lg dark:bg-[#454B4E] dark:text-[#d3d3d3] dark:border-[#3f4347]">
+            <button id="save-event-btn" class="bg-[#337EA9] hover:bg-[#2e6da4] text-white font-bold py-2 px-4 rounded-lg dark:bg-[#3f4347] dark:hover:bg-[#3a3f45]">Save</button>
+            <button id="cancel-event-btn" class="bg-[#D44C47] hover:bg-[#c43a3f] text-white font-bold py-2 px-4 rounded-lg ml-4 dark:bg-[#3f4347] dark:hover:bg-[#3a3f45]">Cancel</button>
         </div>
     </div>
 
-    <div id="color-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Choose a background color:</p>
-            <select id="colorSelect">
-                <option value="#F7F6F3">Default</option>
-                <option value="#FDEBEC">Red</option>
-                <option value="#FBF3DB">Yellow</option>
-                <option value="#EDF3EC">Green</option>
-                <option value="#E7F3F8">Blue</option>
-                <option value="#F4EEEE">Brown</option>
-                <option value="#FAF1F5">Pink</option>
-                <option value="#F6F3F9">Purple</option>
-                <option value="#FAEBDD">Orange</option>
-            </select>
-        </div>
-    </div>
+    <script>
+        let intervalId;
+        let storedEvent = localStorage.getItem('event');
+        let storedEventDate = localStorage.getItem('eventDate');
 
-    <script src="script.js"></script>
+        if (storedEvent && storedEventDate) {
+            document.getElementById('event-name').innerText = storedEvent;
+            const eventDateTime = new Date(storedEventDate);
+            const now = new Date();
+            const diffTime = eventDateTime - now;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+            const diffSeconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+            let days = diffDays;
+            let hours = diffHours;
+            let minutes = diffMinutes;
+            let seconds = diffSeconds;
+
+            document.getElementById('days').innerText = padZero(days);
+            document.getElementById('hours').innerText = padZero(hours);
+            document.getElementById('minutes').innerText = padZero(minutes);
+            document.getElementById('seconds').innerText = padZero(seconds);
+
+            intervalId = setInterval(() => {
+                if (seconds > 0) {
+                    seconds--;
+                } else if (minutes > 0) {
+                    minutes--;
+                    seconds = 59;
+                } else if (hours > 0) {
+                    hours--;
+                    minutes = 59;
+                    seconds = 59;
+                } else if (days > 0) {
+                    days--;
+                    hours = 23;
+                    minutes = 59;
+                    seconds = 59;
+                } else {
+                    clearInterval(intervalId);
+                }
+
+                document.getElementById('days').innerText = padZero(days);
+                document.getElementById('hours').innerText = padZero(hours);
+                document.getElementById('minutes').innerText = padZero(minutes);
+                document.getElementById('seconds').innerText = padZero(seconds);
+            }, 1000);
+        }
+
+        document.getElementById('add-event-btn').addEventListener('click', () => {
+            document.getElementById('modal').classList.remove('hidden');
+        });
+
+        document.getElementById('cancel-event-btn').addEventListener('click', () => {
+            document.getElementById('modal').classList.add('hidden');
+        });
+
+        document.getElementById('save-event-btn').addEventListener('click', () => {
+            const eventName = document.getElementById('event-name-input').value;
+            const eventDate = document.getElementById('event-date').value;
+            const eventDateTime = new Date(eventDate);
+            const now = new Date();
+            const diffTime = eventDateTime - now;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+            const diffSeconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+            let days = diffDays;
+            let hours = diffHours;
+            let minutes = diffMinutes;
+            let seconds = diffSeconds;
+
+            document.getElementById('event-name').innerText = eventName;
+
+            localStorage.setItem('event', eventName);
+            localStorage.setItem('eventDate', eventDate);
+
+            clearInterval(intervalId);
+
+            intervalId = setInterval(() => {
+                if (seconds > 0) {
+                    seconds--;
+                } else if (minutes > 0) {
+                    minutes--;
+                    seconds = 59;
+                } else if (hours > 0) {
+                    hours--;
+                    minutes = 59;
+                    seconds = 59;
+                } else if (days > 0) {
+                    days--;
+                    hours = 23;
+                    minutes = 59;
+                    seconds = 59;
+                } else {
+                    clearInterval(intervalId);
+                }
+
+                document.getElementById('days').innerText = padZero(days);
+                document.getElementById('hours').innerText = padZero(hours);
+                document.getElementById('minutes').innerText = padZero(minutes);
+                document.getElementById('seconds').innerText = padZero(seconds);
+            }, 1000);
+
+            document.getElementById('modal').classList.add('hidden');
+        });
+
+        function padZero(num) {
+            return (num < 10 ? '0' : '') + num;
+        }
+    </script>
 </body>
 </html>
