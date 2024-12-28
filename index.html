@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
 </head>
-<body class="bg-gray-100 h-screen flex justify-center items-center dark:bg-[#2f343a]">
-    <div class="bg-white p-10 rounded-lg shadow-md w-80 relative dark:bg-[#373C3F]">
+<body class="h-screen flex justify-center items-center dark:bg-[#2f343a]">
+    <div class="p-10 rounded-lg shadow-md w-80 relative dark:bg-transparent border border-gray-300 dark:border-[#3f4347]">
         <h1 id="event-name" class="text-lg text-gray-700 font-bold mb-4 dark:text-[#d3d3d3]">No Event</h1>
         <div id="time" class="text-lg text-gray-700 font-bold mt-4 flex justify-between dark:text-[#d3d3d3]">
             <div class="flex flex-col items-center">
@@ -35,7 +35,7 @@
 
     <!-- Modal -->
     <div id="modal" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-10 rounded-lg shadow-md w-80 dark:bg-[#373C3F]">
+        <div class="p-10 rounded-lg shadow-md w-80 dark:bg-transparent border border-gray-300 dark:border-[#3f4347]">
             <h1 class="text-lg text-gray-700 font-bold mb-4 dark:text-[#d3d3d3]">Add Event</h1>
             <input type="text" id="event-name-input" placeholder="Event Name" class="w-full p-2 mb-4 border border-gray-300 rounded-lg dark:bg-[#454B4E] dark:text-[#d3d3d3] dark:border-[#3f4347]">
             <input type="datetime-local" id="event-date" class="w-full p-2 mb-4 border border-gray-300 rounded-lg dark:bg-[#454B4E] dark:text-[#d3d3d3] dark:border-[#3f4347]">
